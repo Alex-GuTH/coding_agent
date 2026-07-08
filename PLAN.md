@@ -40,7 +40,7 @@ Each task must maintain these fixed status fields:
 
 | Task | Status | Completed commit | Review status |
 | --- | --- | --- | --- |
-| Task 1 | Done | 138b17f | Pending |
+| Task 1 | Done | 138b17f | Passed |
 | Task 2 | Pending | N/A | Pending |
 | Task 3 | Pending | N/A | Pending |
 | Task 4 | Pending | N/A | Pending |
