@@ -457,5 +457,25 @@ This log records implementation evidence for each PLAN task.
   - No network access, no real API key reading, no real LLM call.
 - Human Modifications:
   - User manually created Git commit after Codex completed Task 9 implementation and verification.
+- Review Fix Notes:
+  - Original implementation commit: `d1b7f88`.
+  - Review issue: Major issue 1 — `run_tests` observation stored complete stdout/stderr.
+  - Review issue: Major issue 2 — `list_files` used `read_file` guardrail semantics and could leak blocked/secret filenames.
+  - Fix commit: `390addd`.
+  - Regression tests added:
+    - `test_run_tests_observation_does_not_store_unbounded_raw_output`.
+    - `test_list_files_not_executed_when_tool_is_not_allowed`.
+    - `test_list_files_does_not_leak_blocked_or_secret_filenames`.
+  - Red results:
+    - Long `run_tests` output test failed because `ToolObservation.data` contained full `stdout` / `stderr`.
+    - `list_files` allowed-tools test failed because default config still returned `ok`.
+    - Blocked/secret filename test failed because listing had no `filtered_count` and did not filter children.
+  - Green results:
+    - `pytest tests/test_tool_dispatcher.py -v` => `11 passed`.
+    - `pytest -v` => `74 passed`.
+  - Files changed:
+    - `src/safe_test_repair_harness/tools.py`.
+    - `tests/test_tool_dispatcher.py`.
+  - Review Outcome remains `Pending` until re-review passes.
 - Review Outcome: Pending
-- Commit Hash: d1b7f88
+- Commit Hash: 390addd
