@@ -223,3 +223,37 @@ This log records implementation evidence for each PLAN task.
   - Confirmed no network access, no real API key reading, and no real LLM call.
 - Review Outcome: Passed
 - Commit Hash: 98d85d3
+
+### Task 6: Guardrail Engine
+
+- Task ID: Task 6
+- Subagent: Codex inline execution
+- Prompt/Context: Implement only PLAN Task 6 with TDD; Guardrail Engine only; no process runner, feedback analyzer, tool dispatcher, memory, stop policy, agent loop, credential manager, CLI demo, or WebUI.
+- Test Commands:
+  - Red command: `pytest tests/test_guardrails.py -v`
+  - Local ordinary pytest/full-suite run can hit Windows pytest temp/cache permission issue.
+  - Final verification:
+    - `pytest tests/test_guardrails.py -v --basetemp=.pytest-run -p no:cacheprovider`
+    - `pytest -v --basetemp=.pytest-run -p no:cacheprovider`
+- Test Results:
+  - Red: `ModuleNotFoundError: No module named 'safe_test_repair_harness.guardrails'`.
+  - Task 6 verification: 8 passed.
+  - Final full suite verification: 50 passed.
+  - Note: ordinary local pytest may hit Windows pytest temp/cache permission issue on `C:\Users\AlexGu\AppData\Local\Temp\pytest-of-AlexGu`; final verification passed with local basetemp and disabled cacheprovider.
+- Files Changed:
+  - `src/safe_test_repair_harness/guardrails.py`
+  - `tests/test_guardrails.py`
+- Key Implementation Notes:
+  - Blocks file writes outside workspace.
+  - Blocks protected / blocked paths such as `.env`, `.git`, credential files, CI secrets, and configured secret patterns.
+  - Blocks dangerous shell commands and shell metacharacter patterns.
+  - Returns `approval_required` only for explicitly configured high-risk behavior or explicit write threshold.
+  - Uncertain safety defaults to `blocked`.
+  - Returns stable `GuardrailDecision.status` and `reason_code`.
+  - Does not execute any action.
+  - Does not rely on prompt text or LLM self-report.
+- Human Modifications:
+  - User manually created Git commit after Codex completed Task 6 implementation and verification.
+  - User used local `.pytest-run` basetemp and disabled cacheprovider to avoid local Windows temp/cache permission errors.
+- Review Outcome: Pending
+- Commit Hash: ef5a855
