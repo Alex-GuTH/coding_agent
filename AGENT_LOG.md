@@ -400,3 +400,62 @@ This log records implementation evidence for each PLAN task.
     - Analyzer does not use LLM, network, or API keys.
 - Review Outcome: Passed
 - Commit Hash: d89502a
+
+### Task 9: Tool Dispatcher and MVP Tools
+
+- Task ID: Task 9
+- Subagent: Codex inline execution
+- Prompt/Context: Implement only PLAN Task 9 with TDD; Tool Dispatcher and MVP Tools only; no memory, stop policy, agent loop, credential manager, CLI demo, WebUI, Docker, CI, or README.
+- Test Commands:
+  - Red/substep commands: `pytest tests/test_tool_dispatcher.py -v`
+  - Final verification:
+    - `pytest tests/test_tool_dispatcher.py -v`
+    - `pytest -v`
+- Test Results:
+  - Initial red: `ModuleNotFoundError: No module named 'safe_test_repair_harness.tools'`.
+  - Substep red/green summary:
+    1. `read_file`
+       - Red: `ModuleNotFoundError: No module named 'safe_test_repair_harness.tools'`.
+       - Green: `test_read_file_inside_workspace_returns_content` passed.
+    2. `write_file`
+       - Red: `write_file` returned `tool_dispatcher / unsupported_action`.
+       - Green: `test_write_file_inside_workspace_updates_file` passed.
+    3. blocked write
+       - Red: dispatcher did not support injected test guardrail.
+       - Green: blocked guardrail decision prevented file write.
+    4. `run_shell`
+       - Red: dispatcher did not support injected runner.
+       - Green: `run_shell` used runner and did not directly execute shell.
+    5. `run_tests`
+       - Red: runner was not called.
+       - Green: runner output connected to `FeedbackAnalyzer` and returned `FeedbackReport`.
+    6. `apply_patch` / unknown action
+       - Red: unsupported observation did not explicitly set `executable=False`.
+       - Green: both returned non-executable `unsupported_action`.
+    7. parser-produced unsupported observation
+       - Red: dispatcher treated `ToolObservation` like `Action` and accessed `.type`.
+       - Green: unsupported observation is defensively returned without file, guardrail, or runner side effects.
+    8. Full dispatcher test file green, followed by light refactor / MVP action entry completion.
+  - Task 9 verification: 8 passed.
+  - Final full suite verification: 71 passed.
+- Files Changed:
+  - `src/safe_test_repair_harness/tools.py`
+  - `tests/test_tool_dispatcher.py`
+  - `tests/fixtures/workspaces/simple_project/README.txt`
+- Key Implementation Notes:
+  - Implements `ToolDispatcher` MVP routes for `read_file`, `write_file`, `list_files`, `run_shell`, `run_tests`, `request_approval`, and `finish`.
+  - `apply_patch` and unknown actions return `unsupported_action`.
+  - Blocked guardrail decisions prevent file writes and process execution.
+  - Approval-required guardrail decisions return approval observations instead of executing.
+  - `run_shell` and `run_tests` use `ProcessRunner`.
+  - `run_tests` uses `FeedbackAnalyzer` and returns `FeedbackReport`.
+  - Parser-produced unsupported observations are handled defensively without side effects.
+  - Dispatcher produces Task 2 `ToolObservation`.
+  - Dispatcher does not duplicate parser or guardrail logic.
+  - No arbitrary shell support beyond guarded ProcessRunner usage.
+  - No patch application.
+  - No network access, no real API key reading, no real LLM call.
+- Human Modifications:
+  - User manually created Git commit after Codex completed Task 9 implementation and verification.
+- Review Outcome: Pending
+- Commit Hash: d1b7f88
