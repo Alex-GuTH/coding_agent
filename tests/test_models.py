@@ -245,6 +245,52 @@ def test_jsonl_round_trip_does_not_depend_on_field_order():
     assert RunEvent.from_json(same_event_different_order).to_dict() == first.to_dict()
 
 
+def test_serialization_redacts_environment_style_secret_values():
+    run_stdout = RunEvent(
+        timestamp="2026-07-08T03:00:00Z",
+        run_id="run-1",
+        iteration=1,
+        event_type="tool_output",
+        payload={"stdout": "OPENAI_API_KEY=abc123"},
+    ).to_json()
+    run_stderr = RunEvent(
+        timestamp="2026-07-08T03:00:00Z",
+        run_id="run-1",
+        iteration=1,
+        event_type="tool_output",
+        payload={"stderr": "TOKEN=secret-token-value"},
+    ).to_json()
+    observation = ToolObservation(
+        tool="run_shell",
+        status="failed",
+        summary="PASSWORD=hunter2",
+    ).to_json()
+    feedback = FeedbackReport(
+        status="complete",
+        category="command_error",
+        passed=False,
+        raw_excerpt="ANTHROPIC_API_KEY=abc123",
+    ).to_json()
+    nested = RunEvent(
+        timestamp="2026-07-08T03:00:00Z",
+        run_id="run-1",
+        iteration=1,
+        event_type="tool_output",
+        payload={"env": {"OPENAI_API_KEY": "abc123"}},
+    ).to_json()
+
+    combined = "\n".join([run_stdout, run_stderr, observation, feedback, nested])
+
+    assert "OPENAI_API_KEY=abc123" not in combined
+    assert "TOKEN=secret-token-value" not in combined
+    assert "PASSWORD=hunter2" not in combined
+    assert "ANTHROPIC_API_KEY=abc123" not in combined
+    assert "abc123" not in combined
+    assert "hunter2" not in combined
+    assert "secret-token-value" not in combined
+    assert "[REDACTED]" in combined
+
+
 def test_model_contract_tests_do_not_accept_alternate_constructor_shapes():
     with pytest.raises(TypeError):
         GuardrailDecision(

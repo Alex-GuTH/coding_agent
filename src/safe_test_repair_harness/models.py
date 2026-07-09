@@ -25,7 +25,16 @@ _SECRET_KEY_RE = re.compile(
     re.IGNORECASE,
 )
 _SECRET_VALUE_RE = re.compile(
-    r"(sk-[A-Za-z0-9_-]+|token-[A-Za-z0-9_-]+|secret|credential|password|\.env)",
+    r"("
+    r"sk-[A-Za-z0-9_-]+"
+    r"|token-[A-Za-z0-9_-]+"
+    r"|[A-Z0-9_]*(?:API[_-]?KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|PRIVATE[_-]?KEY)"
+    r"\s*=\s*[^\s\"']+"
+    r"|secret"
+    r"|credential"
+    r"|password"
+    r"|\.env"
+    r")",
     re.IGNORECASE,
 )
 
