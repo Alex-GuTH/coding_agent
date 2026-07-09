@@ -55,6 +55,60 @@ def test_rejects_workspace_escape_in_protected_path():
         load_config(FIXTURES / "unsafe.toml")
 
 
+def test_rejects_blocked_path_glob_with_parent_traversal(tmp_path):
+    config_path = tmp_path / "blocked-parent-glob.toml"
+    config_path.write_text('workspace = "."\nblocked_paths = ["../*"]\n', encoding="utf-8")
+
+    with pytest.raises(ConfigError, match="blocked_paths"):
+        load_config(config_path)
+
+
+def test_rejects_blocked_path_pattern_with_path_separator(tmp_path):
+    config_path = tmp_path / "blocked-path-pattern.toml"
+    config_path.write_text('workspace = "."\nblocked_paths = ["secrets/*"]\n', encoding="utf-8")
+
+    with pytest.raises(ConfigError, match="blocked_paths"):
+        load_config(config_path)
+
+
+def test_rejects_unsafe_test_command_even_if_allowed_commands_match(tmp_path):
+    config_path = tmp_path / "unsafe-command.toml"
+    config_path.write_text(
+        '\n'.join(
+            [
+                'workspace = "."',
+                'test_command = ["cmd", "/c", "dir"]',
+                'allowed_commands = [["cmd", "/c", "dir"]]',
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ConfigError, match="test_command"):
+        load_config(config_path)
+
+
+def test_accepts_secret_like_blocked_path_patterns_without_traversal(tmp_path):
+    config_path = tmp_path / "safe-secret-patterns.toml"
+    config_path.write_text(
+        '\n'.join(
+            [
+                'workspace = "."',
+                'blocked_paths = [".env", ".git", "*secret*", "*credential*", "*token*"]',
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    config = load_config(config_path)
+
+    assert "*secret*" in config.blocked_paths
+    assert "*credential*" in config.blocked_paths
+    assert "*token*" in config.blocked_paths
+
+
 def test_defaults_do_not_enable_real_llm(monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "sk-real-secret")
 
