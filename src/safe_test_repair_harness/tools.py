@@ -9,6 +9,9 @@ from safe_test_repair_harness.models import Action, GuardrailDecision, HarnessCo
 from safe_test_repair_harness.process_runner import ProcessRunner, Runner
 
 
+_OUTPUT_EXCERPT_LIMIT = 500
+
+
 class Guardrail(Protocol):
     def check(self, action: Action) -> GuardrailDecision:
         ...
@@ -95,12 +98,19 @@ class ToolDispatcher:
 
         result = self.runner.run(self.config.test_command, self.config.timeout_seconds)
         observation = result.to_observation("run_tests")
+        observation.data = {
+            "exit_code": result.exit_code,
+            "timed_out": result.timed_out,
+            "duration_ms": result.duration_ms,
+            "stdout_excerpt": _bounded_excerpt(result.stdout),
+            "stderr_excerpt": _bounded_excerpt(result.stderr),
+        }
         observation.feedback = self.feedback_analyzer.analyze(result)
         return observation
 
     def _list_files(self, action: Action) -> ToolObservation:
-        path_action = Action(type="read_file", path=action.path or ".")
-        decision = self.guardrail.check(path_action)
+        list_action = Action(type="list_files", path=action.path or ".")
+        decision = self.guardrail.check(list_action)
         if decision.status != "allowed":
             return _guardrail_observation("list_files", decision)
 
@@ -114,16 +124,24 @@ class ToolDispatcher:
                 error_code="not_directory",
             )
 
-        files = sorted(
-            child.relative_to(self.workspace).as_posix()
-            for child in root.rglob("*")
-            if child.is_file()
-        )
+        files: list[str] = []
+        filtered_count = 0
+        for child in root.rglob("*"):
+            if not child.is_file():
+                continue
+
+            relative_path = child.relative_to(self.workspace).as_posix()
+            child_decision = self.guardrail.check(Action(type="read_file", path=relative_path))
+            if child_decision.status == "allowed":
+                files.append(relative_path)
+            else:
+                filtered_count += 1
+
         return ToolObservation(
             tool="list_files",
             status="ok",
             summary="Files listed successfully",
-            data={"path": action.path or ".", "files": files},
+            data={"path": action.path or ".", "files": sorted(files), "filtered_count": filtered_count},
         )
 
     def _request_approval(self, action: Action) -> ToolObservation:
@@ -179,3 +197,9 @@ def _unsupported_action_observation(action_type: str | None) -> ToolObservation:
 def _non_executable_observation(observation: ToolObservation) -> ToolObservation:
     observation.data.setdefault("executable", False)
     return observation
+
+
+def _bounded_excerpt(text: str) -> str:
+    if len(text) <= _OUTPUT_EXCERPT_LIMIT:
+        return text
+    return text[: _OUTPUT_EXCERPT_LIMIT - 3] + "..."

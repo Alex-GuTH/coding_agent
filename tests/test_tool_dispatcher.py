@@ -53,6 +53,39 @@ class ExplodingRunner:
         raise AssertionError("unsupported actions must not execute process runner")
 
 
+class ListFilesFilteringGuardrail:
+    def check(self, action: Action) -> GuardrailDecision:
+        if action.type == "list_files":
+            return GuardrailDecision(
+                status="allowed",
+                reason_code="safe_action",
+                message="List action allowed by test guardrail.",
+                action_type=action.type,
+                path=action.path,
+            )
+
+        path = action.path or ""
+        path_parts = Path(path).parts
+        if action.type == "read_file" and (
+            ".env" in path_parts or ".git" in path_parts or "secret" in Path(path).name
+        ):
+            return GuardrailDecision(
+                status="blocked",
+                reason_code="blocked_path",
+                message="Blocked child path.",
+                action_type=action.type,
+                path=action.path,
+            )
+
+        return GuardrailDecision(
+            status="allowed",
+            reason_code="safe_action",
+            message="Action allowed by test guardrail.",
+            action_type=action.type,
+            path=action.path,
+        )
+
+
 def test_read_file_inside_workspace_returns_content(tmp_path: Path) -> None:
     workspace = copy_workspace(tmp_path)
     dispatcher = ToolDispatcher(make_config(workspace))
@@ -121,6 +154,60 @@ def test_run_tests_returns_feedback_report(tmp_path: Path) -> None:
     assert observation.feedback.category == "tests_passed"
     assert observation.feedback.passed is True
     assert observation.data["exit_code"] == 0
+
+
+def test_run_tests_observation_does_not_store_unbounded_raw_output(tmp_path: Path) -> None:
+    workspace = copy_workspace(tmp_path)
+    stdout = "================ 1 passed in 0.01s ================\n" + ("A" * 2000) + "STDOUT_TAIL"
+    stderr = ("B" * 2000) + "STDERR_TAIL"
+    runner = RecordingRunner(ProcessResult(stdout=stdout, stderr=stderr, exit_code=0, duration_ms=4))
+    dispatcher = ToolDispatcher(make_config(workspace), runner=runner)
+
+    observation = dispatcher.dispatch(Action(type="run_tests"))
+    serialized = observation.to_json()
+
+    assert "stdout" not in observation.data
+    assert "stderr" not in observation.data
+    assert "STDOUT_TAIL" not in serialized
+    assert "STDERR_TAIL" not in serialized
+    assert len(observation.data["stdout_excerpt"]) < len(stdout)
+    assert len(observation.data["stderr_excerpt"]) < len(stderr)
+    assert "STDOUT_TAIL" not in observation.summary
+    assert "STDERR_TAIL" not in observation.summary
+
+
+def test_list_files_not_executed_when_tool_is_not_allowed(tmp_path: Path) -> None:
+    workspace = copy_workspace(tmp_path)
+    dispatcher = ToolDispatcher(make_config(workspace))
+
+    observation = dispatcher.dispatch(Action(type="list_files", path="."))
+
+    assert observation.tool == "list_files"
+    assert observation.status == "blocked"
+    assert observation.error_code == "tool_not_allowed"
+    assert "files" not in observation.data
+
+
+def test_list_files_does_not_leak_blocked_or_secret_filenames(tmp_path: Path) -> None:
+    workspace = copy_workspace(tmp_path)
+    (workspace / ".env").write_text("OPENAI_API_KEY=abc123\n", encoding="utf-8")
+    (workspace / ".git").mkdir()
+    (workspace / ".git" / "config").write_text("[core]\n", encoding="utf-8")
+    (workspace / "nested").mkdir()
+    (workspace / "nested" / "api_secret.txt").write_text("secret\n", encoding="utf-8")
+    (workspace / "nested" / "visible.py").write_text("print('safe')\n", encoding="utf-8")
+    dispatcher = ToolDispatcher(make_config(workspace), guardrail=ListFilesFilteringGuardrail())
+
+    observation = dispatcher.dispatch(Action(type="list_files", path="."))
+    serialized = observation.to_json()
+
+    assert observation.status == "ok"
+    assert "README.txt" in observation.data["files"]
+    assert "nested/visible.py" in observation.data["files"]
+    assert observation.data["filtered_count"] == 3
+    assert ".env" not in serialized
+    assert ".git" not in serialized
+    assert "api_secret.txt" not in serialized
 
 
 def test_apply_patch_returns_unsupported_action(tmp_path: Path) -> None:
