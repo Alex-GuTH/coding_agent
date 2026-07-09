@@ -1,0 +1,2 @@
+workspace = "."
+blocked_paths = ["../outside-secret.txt"]
