@@ -55,6 +55,16 @@ def test_rejects_shell_chaining_and_redirection(tmp_path):
     assert redirected.reason_code == "shell_metacharacter"
 
 
+def test_rejects_single_ampersand_shell_chaining_even_if_command_is_allowed(tmp_path):
+    command = ["pytest", "&", "del", ".env"]
+    config = make_config(tmp_path, allowed_commands=[command])
+
+    decision = GuardrailEngine(config).check(Action(type="run_shell", command=command))
+
+    assert decision.status == "blocked"
+    assert decision.reason_code == "shell_metacharacter"
+
+
 def test_allows_safe_read_inside_workspace(tmp_path):
     config = make_config(tmp_path)
     inside = tmp_path / "src" / "app.py"
@@ -111,3 +121,17 @@ def test_approval_required_only_for_explicit_config_or_threshold(tmp_path):
     assert threshold_decision.reason_code == "write_limit_threshold"
     assert uncertain_decision.status == "blocked"
     assert uncertain_decision.reason_code == "missing_path"
+
+
+def test_blocks_absolute_blocked_directory_descendant(tmp_path):
+    protected_dir = tmp_path / "protected"
+    protected_dir.mkdir()
+    child_file = protected_dir / "secret.txt"
+    config = make_config(tmp_path, blocked_paths=[str(protected_dir)])
+
+    decision = GuardrailEngine(config).check(
+        Action(type="write_file", path=str(child_file), content="token = 'abc'")
+    )
+
+    assert decision.status == "blocked"
+    assert decision.reason_code == "blocked_path"

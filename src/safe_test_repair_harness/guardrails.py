@@ -20,7 +20,7 @@ _DANGEROUS_COMMANDS = {
     "mkfs",
 }
 _SHELL_WRAPPERS = {"cmd", "cmd.exe", "powershell", "powershell.exe", "pwsh", "sh", "bash"}
-_SHELL_METACHAR_RE = re.compile(r"(&&|\|\||[;|<>`])")
+_SHELL_METACHAR_RE = re.compile(r"(&&|\|\||[;&|<>`])")
 
 
 class GuardrailEngine:
@@ -146,7 +146,8 @@ class GuardrailEngine:
 
             blocked_path = Path(blocked)
             if blocked_path.is_absolute():
-                if resolved_path == blocked_path.resolve():
+                resolved_blocked_path = blocked_path.resolve()
+                if resolved_path == resolved_blocked_path or resolved_path.is_relative_to(resolved_blocked_path):
                     return True
             elif blocked_text in resolved_parts or relative_path.lower() == blocked_text:
                 return True
