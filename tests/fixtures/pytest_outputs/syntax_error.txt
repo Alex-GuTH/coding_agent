@@ -1,0 +1,11 @@
+============================= test session starts =============================
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+______________________ ERROR collecting tests/test_app.py ______________________
+E     File "src/app.py", line 3
+E       def broken(
+E                 ^
+E   SyntaxError: '(' was never closed
+=========================== short test summary info ===========================
+ERROR tests/test_app.py

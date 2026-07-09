@@ -1,0 +1,9 @@
+============================= test session starts =============================
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+______________________ ERROR collecting tests/test_app.py ______________________
+ImportError while importing test module 'tests/test_app.py'.
+E   ModuleNotFoundError: No module named 'missing_package'
+=========================== short test summary info ===========================
+ERROR tests/test_app.py
