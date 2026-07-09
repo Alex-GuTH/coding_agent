@@ -111,5 +111,24 @@ This log records implementation evidence for each PLAN task.
 - Human Modifications:
   - User manually created Git commit after Codex completed Task 3 implementation and verification.
   - User used a local `.tmp/pytest` basetemp and disabled cacheprovider to avoid local Windows temp/cache permission errors.
+- Review Fix Notes:
+  - Original implementation commit: `6a03a50`.
+  - Review issues:
+    - Major issue 1: `blocked_paths` glob/path traversal could bypass workspace escape validation.
+    - Major issue 2: unsafe `test_command` could be accepted if `allowed_commands` matched it.
+  - Fix commit: `3fd64b9`.
+  - Added tests:
+    - `test_rejects_blocked_path_glob_with_parent_traversal`.
+    - `test_rejects_blocked_path_pattern_with_path_separator`.
+    - `test_rejects_unsafe_test_command_even_if_allowed_commands_match`.
+    - `test_accepts_secret_like_blocked_path_patterns_without_traversal`.
+  - Red result: new tests initially failed for `../*`, `secrets/*`, and `["cmd", "/c", "dir"]`.
+  - Green result:
+    - `pytest tests/test_config_loader.py -v --basetemp=.pytest-run -p no:cacheprovider` => 12 passed.
+    - `pytest -v --basetemp=.pytest-run -p no:cacheprovider` => 31 passed.
+  - Files changed:
+    - `src/safe_test_repair_harness/config.py`.
+    - `tests/test_config_loader.py`.
+  - Review Outcome remains `Pending` until re-review passes.
 - Review Outcome: Pending
-- Commit Hash: 6a03a50
+- Commit Hash: 3fd64b9
