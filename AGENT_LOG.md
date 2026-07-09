@@ -255,5 +255,25 @@ This log records implementation evidence for each PLAN task.
 - Human Modifications:
   - User manually created Git commit after Codex completed Task 6 implementation and verification.
   - User used local `.pytest-run` basetemp and disabled cacheprovider to avoid local Windows temp/cache permission errors.
+- Review Fix Notes:
+  - Original implementation commit: `ef5a855`.
+  - Review issues:
+    - Major issue: single `&` shell chaining was not blocked.
+    - Minor issue: absolute blocked directory descendant paths were not blocked.
+  - Fix commit: `a39d08f`.
+  - Added regression tests:
+    - `test_rejects_single_ampersand_shell_chaining_even_if_command_is_allowed`.
+    - `test_blocks_absolute_blocked_directory_descendant`.
+  - Red result:
+    - `pytest tests/test_guardrails.py -v --basetemp=.pytest-run -p no:cacheprovider` => `2 failed, 8 passed`.
+    - Single `&` command chaining was incorrectly allowed.
+    - Absolute blocked directory child file was incorrectly allowed.
+  - Green result:
+    - `pytest tests/test_guardrails.py -v --basetemp=.pytest-run -p no:cacheprovider` => `10 passed`.
+    - `pytest -v --basetemp=.pytest-run -p no:cacheprovider` => `52 passed`.
+  - Files changed:
+    - `src/safe_test_repair_harness/guardrails.py`.
+    - `tests/test_guardrails.py`.
+  - Review Outcome remains `Pending` until re-review passes.
 - Review Outcome: Pending
-- Commit Hash: ef5a855
+- Commit Hash: a39d08f
