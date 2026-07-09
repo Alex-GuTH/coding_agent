@@ -497,3 +497,41 @@ This log records implementation evidence for each PLAN task.
   - Confirmed Task 9 still does not implement Task 10+ modules.
 - Review Outcome: Passed
 - Commit Hash: 390addd
+
+### Task 10: Memory and JSONL Run Log
+
+- Task ID: Task 10
+- Subagent: Codex inline execution
+- Prompt/Context: Implement only PLAN Task 10 Memory and JSONL Run Log with TDD; no stop policy, agent loop, credential manager, CLI demo, WebUI, Docker, CI, README, or Task 11+.
+- Test Commands:
+  - `pytest tests/test_memory.py -v`
+  - `pytest -v`
+- Test Results:
+  - Initial test file accidentally included patch markers and was corrected before implementation.
+  - Correct red: `ModuleNotFoundError: No module named 'safe_test_repair_harness.memory'`.
+  - Task 10 verification: 8 passed.
+  - Full suite verification: 82 passed.
+- Files Changed:
+  - `src/safe_test_repair_harness/memory.py`
+  - `tests/test_memory.py`
+- Key Implementation Notes:
+  - Implements `JsonlRunLog(path)`.
+  - Appends Task 2 `RunEvent` records as JSONL.
+  - Each line round-trips as a JSON object.
+  - Tests assert parsed JSON structure/key fields, not textual field order.
+  - Reads recent events in deterministic file order.
+  - `read_recent(limit=N)` returns the most recent N events while preserving file order.
+  - Selects bounded context for later LLM calls.
+  - Redacts credential-like and secret-like values before writing to disk.
+  - Redacts nested payload values, path, command, stdout/stderr summaries, and raw excerpts.
+  - Handles missing and empty log files as empty history.
+  - Does not implement semantic memory.
+  - Does not call an LLM.
+  - Does not access the network.
+  - Does not implement Task 11+.
+- Remaining Risk:
+  - With extremely small `max_chars`, `select_context` may return an empty list if even compact event context cannot fit; this is deterministic degradation.
+- Human Modifications:
+  - User manually created Git commit after Codex completed Task 10 implementation and verification.
+- Review Outcome: Pending
+- Commit Hash: 5b9fcd6
