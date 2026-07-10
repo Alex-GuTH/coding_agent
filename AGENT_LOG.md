@@ -988,5 +988,25 @@ This log records implementation evidence for each PLAN task.
     - CI remains mock/stub only.
     - No real provider env vars, API keys, tokens, deployment config, secrets, or Task 18+ behavior added.
   - Review Outcome remains `Pending` until re-review passes.
-- Review Outcome: Pending
+- Re-review Notes:
+  - Re-review outcome: Passed.
+  - Critical issues: None.
+  - Major issues: None.
+  - Minor issues: None.
+  - Test results:
+    - `pytest tests/test_ci_config.py -v` => `7 passed`.
+    - `pytest -v` => `120 passed`.
+    - `git status --short` => clean.
+  - Docker build note:
+    - Codex re-review session could not complete Docker build due local Docker access restrictions.
+    - User post-fix Docker verification had already succeeded with `docker build -t safe-test-repair-harness:ci-check .`.
+  - Confirmed previous Major issue fixed:
+    - GitHub Actions test job installs pytest explicitly before `pytest -v`.
+    - GitLab CI `unit-test` installs pytest explicitly before `pytest -v`.
+    - Strengthened CI config test would fail if pytest install line were removed.
+  - Confirmed Task 17 scope:
+    - Fix commit `7daf8af` only changed `.github/workflows/ci.yml`, `.gitlab-ci.yml`, and `tests/test_ci_config.py`.
+    - No Task 18+ code was introduced.
+    - No real LLM keys or provider env vars are referenced.
+- Review Outcome: Passed
 - Commit Hash: 7daf8af
