@@ -1010,3 +1010,38 @@ This log records implementation evidence for each PLAN task.
     - No real LLM keys or provider env vars are referenced.
 - Review Outcome: Passed
 - Commit Hash: 7daf8af
+
+### Task 18: WebUI Deployment Smoke and Public URL
+
+- Task ID: Task 18
+- Subagent: Codex inline execution plus user manual Render deployment/smoke verification
+- Prompt/Context: Implement only PLAN Task 18 deployment smoke and public URL with TDD; do not start Task 19.
+- Test Commands:
+  - `pytest tests/test_deployment_contract.py -v`
+  - `pytest -v`
+  - Local WebUI smoke endpoints
+  - Remote public WebUI smoke endpoints
+- Test Results:
+  - Red: first deployment-contract test failed; full contract red had 4 failures because deployment config/docs did not exist.
+  - Green initial: deployment contract 4 passed; full suite 124 passed.
+  - Local smoke: `/health` 200, `/demos/repair-loop` 200, `/upload` 404, workspace query 400.
+  - Public deployment smoke: `/health` 200, `/demos/repair-loop` 200, `/upload` 404, workspace query 400.
+  - Final green after public URL evidence: deployment contract 5 passed; full suite 125 passed.
+- Files Changed:
+  - `README.md`
+  - `render.yaml`
+  - `tests/test_deployment_contract.py`
+- Key Implementation Notes:
+  - Added Render Blueprint deployment config.
+  - Added minimal Task 18 README deployment section only.
+  - Recorded public URL and deployment verification date.
+  - Recorded remote smoke status codes.
+  - Kept deployment mock-only and no-key.
+  - Documented no upload and no arbitrary workspace/project execution.
+  - Did not introduce Task 19 full README/acceptance documentation.
+- Human Modifications:
+  - User manually deployed the Render Blueprint and ran public smoke checks.
+  - User manually created commits after local verification.
+  - User pushed `ba99efa` to `origin/main`.
+- Review Outcome: Pending
+- Commit Hash: ba99efa
