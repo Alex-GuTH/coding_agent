@@ -12,6 +12,14 @@ def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def assert_installs_pytest_before_running_tests(text: str) -> None:
+    lines = [line.strip().lower() for line in text.splitlines()]
+    pytest_run_index = next(index for index, line in enumerate(lines) if "pytest -v" in line)
+    prior_lines = lines[:pytest_run_index]
+
+    assert any("python -m pip install" in line and "pytest" in line for line in prior_lines)
+
+
 def test_github_actions_workflow_exists() -> None:
     assert GITHUB_WORKFLOW.exists()
 
@@ -30,6 +38,7 @@ def test_github_actions_has_test_job() -> None:
     assert "test:" in text
     assert "python -m pip install" in text
     assert "pytest -v" in text
+    assert_installs_pytest_before_running_tests(text)
 
 
 def test_github_actions_has_docker_build_job() -> None:
@@ -50,6 +59,7 @@ def test_gitlab_ci_contains_unit_test_job() -> None:
     assert "\nunit-test:" in f"\n{text}"
     assert "python -m pip install" in text
     assert "pytest -v" in text
+    assert_installs_pytest_before_running_tests(text)
 
 
 def test_ci_configs_do_not_reference_real_api_keys() -> None:
