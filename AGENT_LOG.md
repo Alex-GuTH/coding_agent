@@ -873,3 +873,37 @@ This log records implementation evidence for each PLAN task.
   - Confirmed tests run without secrets.
 - Review Outcome: Passed
 - Commit Hash: d038adc
+
+### Task 16: Docker Distribution
+
+- Task ID: Task 16
+- Subagent: Codex inline execution
+- Prompt/Context: Implement only PLAN Task 16 Docker Distribution with TDD; no CI, README, CLI, WebUI, demo.py, agent loop internals, credential manager, or Task 17+.
+- Test Commands:
+  - `pytest tests/test_docker_metadata.py -v`
+  - `pytest -v`
+  - `docker build -t safe-test-repair-harness:local .`
+- Test Results:
+  - Red: Dockerfile was missing; Docker metadata tests failed because Dockerfile could not be read.
+  - Task 16 verification: `3 passed`.
+  - Full suite verification: `113 passed`.
+  - Docker build verification: success after Docker Desktop was running and `python:3.13-slim` was pulled successfully.
+- Files Changed:
+  - `Dockerfile`
+  - `tests/test_docker_metadata.py`
+- Key Implementation Notes:
+  - Adds Docker distribution using `python:3.13-slim`.
+  - Installs the package from local `pyproject.toml` and `src/`.
+  - Does not copy the whole repository.
+  - Does not copy `.env`.
+  - Does not copy credential files.
+  - Does not include API keys or tokens.
+  - Uses safe mock default command: `safe-repair demo guardrail`.
+  - Does not require real LLM keys.
+  - Does not require real provider env vars.
+  - Keeps README text deferred to Task 19.
+  - No CI, README, CLI, WebUI, `demo.py`, agent loop internals, credential manager, or Task 17+ code was introduced.
+- Human Modifications:
+  - User manually started Docker Desktop, pulled `python:3.13-slim`, verified Docker build, and created Git commit after Codex completed Task 16 implementation and verification.
+- Review Outcome: Pending
+- Commit Hash: 7c1a108
