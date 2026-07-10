@@ -1,0 +1,7 @@
+image: python:3.13-slim
+
+unit-test:
+  script:
+    - python -m pip install --upgrade pip
+    - python -m pip install -e .
+    - pytest -v
