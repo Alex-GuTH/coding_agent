@@ -805,3 +805,41 @@ This log records implementation evidence for each PLAN task.
   - Confirmed tests verify fake env key is not leaked.
 - Review Outcome: Passed
 - Commit Hash: e8be18f
+
+### Task 15: WebUI Built-In Mock Demo
+
+- Task ID: Task 15
+- Subagent: Codex inline execution
+- Prompt/Context: Implement only PLAN Task 15 WebUI Built-In Mock Demo with TDD; no Docker, CI, README, CLI changes, demo.py changes, agent loop internals changes, credential manager changes, or Task 16+.
+- Test Commands:
+  - `pytest tests/test_webui.py -v`
+  - `pytest -v`
+- Test Results:
+  - Red: WebUI module and standard-library handler were missing; demo routes/upload rejection/arbitrary workspace rejection were missing or incorrect.
+  - Task 15 verification: `4 passed`.
+  - Full suite verification: `110 passed`.
+- Files Changed:
+  - `src/safe_test_repair_harness/webui.py`
+  - `tests/test_webui.py`
+- Key Implementation Notes:
+  - Adds minimal standard-library WebUI using `BaseHTTPRequestHandler`.
+  - Adds `BuiltinDemoHandler`.
+  - Adds `make_server(...)`.
+  - Adds stable JSON `GET /health`.
+  - Adds stable JSON demo endpoints for guardrail, feedback-classifier, and repair-loop.
+  - Reuses Task 14 demo functions from `demo.py`.
+  - Does not expose file upload.
+  - Rejects or omits `/upload`.
+  - Rejects user-supplied workspace/path/command query parameters.
+  - Does not execute uploaded code.
+  - Does not execute arbitrary workspaces.
+  - Does not call real LLM providers.
+  - Does not read real API keys.
+  - Does not access keyring or credentials.
+  - Does not access network services.
+  - Keeps WebUI minimal and JSON-focused.
+  - No Docker, CI, README, CLI, demo.py, credential manager, or Task 16+ code was introduced.
+- Human Modifications:
+  - User manually created Git commit after Codex completed Task 15 implementation and verification.
+- Review Outcome: Pending
+- Commit Hash: d038adc
