@@ -61,8 +61,11 @@ class AgentLoop:
             if provider_result.ok:
                 self._record(log, active_run_id, iteration, "provider_output", provider_result.to_dict())
             else:
-                self._record(log, active_run_id, iteration, "provider_error", provider_result.to_dict())
-                stop = self.stop_policy.decide(iteration, provider_error=provider_result.error_code)
+                provider_error_code = provider_result.error_code or "unknown_provider_error"
+                provider_payload = provider_result.to_dict()
+                provider_payload["normalized_error_code"] = provider_error_code
+                self._record(log, active_run_id, iteration, "provider_error", provider_payload)
+                stop = self.stop_policy.decide(iteration, provider_error=provider_error_code)
                 self._record(log, active_run_id, iteration, "stop_decision", stop.to_dict())
                 break
 

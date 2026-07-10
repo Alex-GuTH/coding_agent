@@ -80,6 +80,26 @@ def test_agent_loop_handles_invalid_llm_json(tmp_path: Path) -> None:
     assert provider.calls
 
 
+def test_provider_failure_without_error_code_stops_with_provider_error(tmp_path: Path) -> None:
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    provider = RecordingProvider([ProviderResult(ok=False, message="Provider failed without code")])
+
+    result = AgentLoop(
+        config=make_config(workspace),
+        provider=provider,
+        run_log=JsonlRunLog(tmp_path / "run.jsonl"),
+    ).run("repair failing tests", run_id="run-provider-error")
+
+    assert result.success is False
+    assert result.stop.should_stop is True
+    assert result.stop.reason_code == "unrecoverable_provider_error"
+    assert result.stop.metadata["error_code"] == "unknown_provider_error"
+    assert result.iterations == 1
+    assert [event.event_type for event in result.trace] == ["provider_error", "stop_decision"]
+    assert result.trace[0].payload["ok"] is False
+
+
 def test_agent_loop_records_each_iteration(tmp_path: Path) -> None:
     workspace = tmp_path / "workspace"
     workspace.mkdir()
