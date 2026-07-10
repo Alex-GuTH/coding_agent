@@ -688,3 +688,38 @@ This log records implementation evidence for each PLAN task.
   - Confirmed no credential manager, CLI demo, WebUI, Docker, CI, README, external service code, or Task 13+ implementation.
 - Review Outcome: Passed
 - Commit Hash: 822a6d9
+
+### Task 13: Credential Manager With Fake Keyring Tests
+
+- Task ID: Task 13
+- Subagent: Codex inline execution
+- Prompt/Context: Implement only PLAN Task 13 Credential Manager with fake keyring/store tests; no CLI demo, WebUI, Docker, CI, README, agent loop changes, or Task 14+.
+- Test Commands:
+  - `pytest tests/test_credentials.py -v`
+  - `pytest -v`
+- Test Results:
+  - Correct red: `ModuleNotFoundError: No module named 'safe_test_repair_harness.credentials'`.
+  - Task 13 verification: `7 passed`.
+  - Full suite verification: `102 passed`.
+- Files Changed:
+  - `src/safe_test_repair_harness/credentials.py`
+  - `tests/test_credentials.py`
+- Key Implementation Notes:
+  - Defines `SecretStore` protocol.
+  - Implements `FakeCredentialStore`.
+  - Implements `CredentialManager`.
+  - Supports save, provider-call lookup, status, clear, and missing-key behavior.
+  - Missing credentials return stable `missing_credential`.
+  - Status output never returns plaintext key.
+  - Logging/status observation paths redact secrets.
+  - Adds recursive `redact_for_logging`.
+  - Ensures secret-like values are redacted from observation and feedback payloads.
+  - Does not require real keyring state.
+  - Does not read environment credentials.
+  - Does not access network.
+  - Does not require or store real API keys.
+  - Does not implement Task 14+.
+- Human Modifications:
+  - User manually created Git commit after Codex completed Task 13 implementation and verification.
+- Review Outcome: Pending
+- Commit Hash: 18e9e54
