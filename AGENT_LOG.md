@@ -646,5 +646,23 @@ This log records implementation evidence for each PLAN task.
   - `list_files` / `request_approval` remain limited by existing parser support boundaries; inherited MVP scope, not a Task 12 regression.
 - Human Modifications:
   - User manually created Git commit after Codex completed Task 12 implementation and verification.
+- Review Fix Notes:
+  - Original implementation commit: `822a6d9`.
+  - Review issue: Major issue found in provider failure handling when `ProviderResult(ok=False, error_code=None)`.
+  - Fix commit: `f7e5785`.
+  - Added regression test: `test_provider_failure_without_error_code_stops_with_provider_error`.
+  - Red result: `1 failed, 7 passed`; final stop incorrectly had `should_stop=False` and `reason_code='continue'`.
+  - Green result:
+    - `pytest tests/test_agent_loop.py -v --basetemp=.pytest-run -p no:cacheprovider` => `8 passed`.
+    - `pytest -v --basetemp=.pytest-run -p no:cacheprovider` => `95 passed`.
+  - Files changed:
+    - `src/safe_test_repair_harness/agent_loop.py`
+    - `tests/test_agent_loop.py`
+  - Fix behavior:
+    - Missing provider error code is normalized to `unknown_provider_error`.
+    - Non-empty provider error is passed to `StopPolicy.decide(...)`.
+    - Provider failure now returns stopping unsuccessful final `StopDecision`.
+    - Provider-error trace includes `normalized_error_code`.
+  - Review Outcome remains `Pending` until re-review passes.
 - Review Outcome: Pending
 - Commit Hash: 822a6d9
