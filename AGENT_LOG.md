@@ -606,3 +606,45 @@ This log records implementation evidence for each PLAN task.
   - Confirmed no agent loop, memory changes, semantic state, LLM calls, network access, real API key reading, or Task 12+ implementation.
 - Review Outcome: Passed
 - Commit Hash: 0a4be85
+
+### Task 12: Agent Loop
+
+- Task ID: Task 12
+- Subagent: Codex inline execution
+- Prompt/Context: Implement only PLAN Task 12 Agent Loop with TDD; connect provider, parser, guardrail, tools, feedback, memory, and stop policy; no credential manager, CLI demo, WebUI, Docker, CI, README, or Task 13+.
+- Test Commands:
+  - `pytest tests/test_agent_loop.py -v`
+  - `pytest -v`
+- Test Results:
+  - Correct red: `ModuleNotFoundError: No module named 'safe_test_repair_harness.agent_loop'`.
+  - Task 12 verification: 7 passed.
+  - Full suite verification: 94 passed.
+- Files Changed:
+  - `src/safe_test_repair_harness/agent_loop.py`
+  - `tests/test_agent_loop.py`
+- Key Implementation Notes:
+  - Implements `AgentLoop`.
+  - Implements `AgentRunResult`.
+  - Coordinates injected provider, action parser, guardrail engine, tool dispatcher, JSONL memory, and stop policy.
+  - Builds deterministic bounded iteration context.
+  - Calls only injected provider and mock provider in tests.
+  - Parses provider output through existing parser.
+  - Logs parser errors and does not execute parser failures.
+  - Checks guardrails before tool dispatch.
+  - Logs blocked guardrail decisions and avoids dispatcher execution for blocked actions.
+  - Dispatches approved actions through Task 9 tools.
+  - Records meaningful loop events as Task 2 `RunEvent` JSONL entries.
+  - Feeds feedback into next provider context.
+  - Uses Task 11 stop policy.
+  - Uses Task 2 model contract fields consistently.
+  - Does not call a real LLM.
+  - Does not access the network.
+  - Does not read real API keys.
+  - Does not use an existing agent framework or agent runner.
+  - Does not implement Task 13+.
+- Remaining Risk:
+  - `list_files` / `request_approval` remain limited by existing parser support boundaries; inherited MVP scope, not a Task 12 regression.
+- Human Modifications:
+  - User manually created Git commit after Codex completed Task 12 implementation and verification.
+- Review Outcome: Pending
+- Commit Hash: 822a6d9
