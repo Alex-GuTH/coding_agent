@@ -32,6 +32,22 @@ def test_deployment_contract_documents_public_url_placeholder_before_deploy() ->
     assert "/demos/repair-loop" in text
 
 
+def test_deployment_contract_records_public_smoke_after_deploy() -> None:
+    text = deployment_text()
+
+    assert "https://safe-test-repair-harness-mock-webui.onrender.com" in text
+    assert "2026-07-11" in text
+    assert "get /health" in text
+    assert "/health` => `200" in text
+    assert "get /demos/repair-loop" in text
+    assert "/demos/repair-loop` => `200" in text
+    assert "get /upload" in text
+    assert "/upload` => `404" in text
+    assert "workspace" in text
+    assert "=> `400" in text
+    assert "built-in mock repair-loop demo trace" in text
+
+
 def test_deployment_contract_states_mock_only_no_real_key() -> None:
     text = deployment_text()
 

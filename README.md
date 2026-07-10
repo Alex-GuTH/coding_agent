@@ -12,12 +12,16 @@ Manual deployment can use `render.yaml`, which starts the built-in WebUI with:
 python -c "import os; from safe_test_repair_harness.webui import make_server; make_server('0.0.0.0', int(os.environ.get('PORT', '8000'))).serve_forever()"
 ```
 
-Public URL: pending manual deployment.
+Public URL: `https://safe-test-repair-harness-mock-webui.onrender.com`
 
-After deployment, verify:
+Deployment verification date: `2026-07-11`
 
-- `GET /health`
-- `GET /demos/repair-loop`
+Remote smoke checks:
+
+- `GET /health` => `200`; response included `{"demo_mode": true, "provider": "mock", "status": "ok"}`.
+- `GET /demos/repair-loop` => `200`; response included the built-in mock repair-loop demo trace.
+- `GET /upload` => `404`.
+- `GET /demos/repair-loop?workspace=C:\Windows` => `400`.
 
 Safety boundaries:
 
