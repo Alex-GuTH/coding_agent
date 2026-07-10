@@ -745,3 +745,39 @@ This log records implementation evidence for each PLAN task.
   - Confirmed existing Task 2 / Task 10 redaction tests remain passing.
 - Review Outcome: Passed
 - Commit Hash: 18e9e54
+
+### Task 14: CLI and Deterministic Mechanism Demos
+
+- Task ID: Task 14
+- Subagent: Codex inline execution
+- Prompt/Context: Implement only PLAN Task 14 CLI and Deterministic Mechanism Demos with TDD; no WebUI, Docker, CI, README, credential manager changes, agent loop internals changes, or Task 15+.
+- Test Commands:
+  - `pytest tests/test_cli_demos.py -v`
+  - `pytest -v`
+- Test Results:
+  - Red: CLI demo subcommands/choices were missing for guardrail, feedback-classifier, and repair-loop.
+  - Task 14 verification: `4 passed`.
+  - Full suite verification: `106 passed`.
+- Files Changed:
+  - `src/safe_test_repair_harness/cli.py`
+  - `src/safe_test_repair_harness/demo.py`
+  - `tests/test_cli_demos.py`
+- Key Implementation Notes:
+  - Adds deterministic built-in CLI demos.
+  - Adds `safe-repair demo guardrail`.
+  - Adds `safe-repair demo feedback-classifier`.
+  - Adds `safe-repair demo repair-loop`.
+  - Guardrail demo uses code-level `GuardrailEngine` dangerous-action blocking.
+  - Feedback-classifier demo routes deterministic samples through `FeedbackAnalyzer`.
+  - Repair-loop demo uses mock-driven `AgentLoop`, `MockLLMProvider`, `FakeProcessRunner`, and `ToolDispatcher`.
+  - Demo output is stable JSON.
+  - Demos use mock/stub components only.
+  - Demos do not require real LLM keys.
+  - Demos do not read environment credentials.
+  - Demos do not access network.
+  - Demos do not execute uploaded code or arbitrary workspaces.
+  - No WebUI, Docker, CI, README, credential manager, or Task 15+ code was introduced.
+- Human Modifications:
+  - User manually created Git commit after Codex completed Task 14 implementation and verification.
+- Review Outcome: Pending
+- Commit Hash: e8be18f
