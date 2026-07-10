@@ -553,3 +553,38 @@ This log records implementation evidence for each PLAN task.
   - Confirmed no semantic memory, LLM calls, network access, real API key reading, or Task 11+ implementation.
 - Review Outcome: Passed
 - Commit Hash: 5b9fcd6
+
+### Task 11: Stop Policy
+
+- Task ID: Task 11
+- Subagent: Codex inline execution
+- Prompt/Context: Implement only PLAN Task 11 Stop Policy with TDD; no agent loop, memory changes, credential manager, CLI demo, WebUI, Docker, CI, README, or Task 12+.
+- Test Commands:
+  - `pytest tests/test_stop_policy.py -v`
+  - `pytest -v`
+- Test Results:
+  - Correct red: `ModuleNotFoundError: No module named 'safe_test_repair_harness.stop_policy'`.
+  - Task 11 verification: 5 passed.
+  - Full suite verification: 87 passed.
+- Files Changed:
+  - `src/safe_test_repair_harness/stop_policy.py`
+  - `tests/test_stop_policy.py`
+- Key Implementation Notes:
+  - Implements `StopPolicy(max_iterations)`.
+  - Implements `decide(...) -> StopDecision`.
+  - Uses objective `FeedbackReport.passed=True` and `category="tests_passed"` for success.
+  - Stops at max iterations with deterministic reason.
+  - Stops on unrecoverable provider/parser/tool errors.
+  - Treats `finish` without passing tests as incomplete and not successful.
+  - Returns Task 2 `StopDecision` contract fields.
+  - Does not inspect natural language prompt text.
+  - Does not call an LLM.
+  - Does not access the network.
+  - Does not read real API keys.
+  - Does not implement Task 12+.
+- Remaining Risk:
+  - `finish` without passing tests is stopped but unsuccessful/incomplete; Task 12 may decide whether the agent loop should continue or surface this state.
+- Human Modifications:
+  - User manually created Git commit after Codex completed Task 11 implementation and verification.
+- Review Outcome: Pending
+- Commit Hash: 0a4be85
