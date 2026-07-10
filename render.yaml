@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: safe-test-repair-harness-mock-webui
+    runtime: python
+    plan: free
+    buildCommand: python -m pip install -e .
+    startCommand: >-
+      python -c "import os; from safe_test_repair_harness.webui import make_server; make_server('0.0.0.0', int(os.environ.get('PORT', '8000'))).serve_forever()"
