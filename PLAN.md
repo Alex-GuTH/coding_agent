@@ -51,7 +51,7 @@ Each task must maintain these fixed status fields:
 | Task 9 | Done | 390addd | Passed |
 | Task 10 | Done | 5b9fcd6 | Passed |
 | Task 11 | Done | 0a4be85 | Passed |
-| Task 12 | Done | 822a6d9 | Pending |
+| Task 12 | Done | 822a6d9 | Passed |
 | Task 13 | Pending | N/A | Pending |
 | Task 14 | Pending | N/A | Pending |
 | Task 15 | Pending | N/A | Pending |

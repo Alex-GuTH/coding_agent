@@ -664,5 +664,27 @@ This log records implementation evidence for each PLAN task.
     - Provider failure now returns stopping unsuccessful final `StopDecision`.
     - Provider-error trace includes `normalized_error_code`.
   - Review Outcome remains `Pending` until re-review passes.
-- Review Outcome: Pending
+- Re-review Notes:
+  - Re-review outcome: Passed.
+  - Critical issues: None.
+  - Major issues: None.
+  - Minor issues: None.
+  - Test results:
+    - `pytest tests/test_agent_loop.py -v` => `8 passed`.
+    - `pytest -v` => `95 passed`.
+    - `git status --short` => clean.
+  - Confirmed previous Major issue fixed:
+    - Missing provider error code now normalizes to `unknown_provider_error`.
+    - Provider failure passes non-empty error into `StopPolicy.decide(...)`.
+    - Final `StopDecision.should_stop is True`.
+    - Final `StopDecision.success is False`.
+    - Reason code no longer returns `continue`.
+    - Provider-error trace includes `normalized_error_code`.
+  - Confirmed regression test:
+    - `test_provider_failure_without_error_code_stops_with_provider_error`.
+    - Asserts structured stop fields.
+    - Would fail on the old bug.
+  - Confirmed Task 12 remains limited to agent loop and tests.
+  - Confirmed no credential manager, CLI demo, WebUI, Docker, CI, README, external service code, or Task 13+ implementation.
+- Review Outcome: Passed
 - Commit Hash: 822a6d9
