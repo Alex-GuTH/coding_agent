@@ -964,5 +964,29 @@ This log records implementation evidence for each PLAN task.
   - No README, deployment config, WebUI, Dockerfile, CLI, `demo.py`, agent loop internals, credential manager, or Task 18+ code was introduced.
 - Human Modifications:
   - User manually verified pytest, full suite, Docker build, and created Git commit after Codex completed Task 17 implementation and verification.
+- Review Fix Notes:
+  - Original implementation commit: `f81167c`.
+  - Review issue: Major issue — CI jobs installed the package but did not explicitly install `pytest`, so clean CI environments could fail at `pytest -v`.
+  - Fix commit: `7daf8af`.
+  - Regression tests:
+    - Strengthened GitHub Actions pytest-install coverage.
+    - Strengthened GitLab CI pytest-install coverage.
+  - Red result:
+    - `pytest tests/test_ci_config.py -v` => `2 failed, 5 passed`.
+    - Both CI paths lacked explicit pytest installation.
+  - Green result:
+    - `pytest tests/test_ci_config.py -v --basetemp=.pytest-run -p no:cacheprovider` => `7 passed`.
+    - `pytest -v --basetemp=.pytest-run -p no:cacheprovider` => `120 passed`.
+    - `docker build -t safe-test-repair-harness:ci-check .` => success.
+  - Files changed:
+    - `.github/workflows/ci.yml`.
+    - `.gitlab-ci.yml`.
+    - `tests/test_ci_config.py`.
+  - Fix notes:
+    - GitHub Actions test job now installs pytest explicitly with package install.
+    - GitLab CI `unit-test` now installs pytest explicitly with package install.
+    - CI remains mock/stub only.
+    - No real provider env vars, API keys, tokens, deployment config, secrets, or Task 18+ behavior added.
+  - Review Outcome remains `Pending` until re-review passes.
 - Review Outcome: Pending
-- Commit Hash: f81167c
+- Commit Hash: 7daf8af
