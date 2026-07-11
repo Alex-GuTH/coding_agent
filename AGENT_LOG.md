@@ -1072,3 +1072,32 @@ This log records implementation evidence for each PLAN task.
     - Task 19 and Task 20 remain pending.
 - Review Outcome: Passed
 - Commit Hash: ba99efa
+
+### Task 19: README, Acceptance Sweep, and AGENT_LOG Finalization
+
+- Task ID: Task 19
+- Subagent: Codex inline execution
+- Prompt/Context: Implement only PLAN Task 19 README, acceptance sweep, and AGENT_LOG finalization with TDD; do not start Task 20 or create/draft `REFLECTION.md`.
+- Test Commands:
+  - `pytest tests/test_readme_contract.py -v`
+  - `pytest -v`
+- Test Results:
+  - Red: first README contract test failed because CLI mock demo/no-key documentation was missing.
+  - Red after full contract expansion: 8 failed, 2 passed because README lacked Docker, CI, credential safety, `apply_patch` limitation, acceptance mapping, and AGENT_LOG Task 19 sweep notes.
+  - Green: `pytest tests/test_readme_contract.py -v` => `10 passed`.
+  - Deployment contract regression: `pytest tests/test_deployment_contract.py -v` => `5 passed`.
+  - Full suite: `pytest -v` => `135 passed`.
+- Files Changed:
+  - `README.md`
+  - `AGENT_LOG.md`
+  - `tests/test_readme_contract.py`
+- Acceptance Sweep Notes:
+  - README was expanded for setup, one-command tests, CLI mock demos, public WebUI URL, Task 18 smoke evidence, Docker, CI, credential safety, no-key mock mode, safety boundaries, known limitations, and acceptance evidence mapping.
+  - README contract documents setup, one-command tests, CLI mock demos, WebUI public URL, Docker usage, CI files, credential safety, no-key mock mode, safety boundaries, known limitations, and acceptance evidence mapping.
+  - README contract preserves Task 18 public URL and smoke evidence.
+  - README contract does not claim GitHub Actions passed without external CI evidence.
+  - README contract does not require real LLM keys for tests, CI, Docker, CLI demos, or WebUI demo.
+  - Task 20 reflection work was not introduced.
+- Human Modifications: Pending user commit after verification.
+- Review Outcome: Pending
+- Commit Hash: N/A
