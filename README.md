@@ -91,6 +91,8 @@ docker run --rm safe-test-repair-harness:local
 
 The Dockerfile installs the package from `pyproject.toml` and `src/`. The safe mock default command is `safe-repair demo guardrail`.
 
+Public registry note: local Docker build/run and GitHub Actions Docker build are verified. If strict public-registry evidence is required, publish this image to GHCR or Docker Hub and add the resulting `docker pull` command here.
+
 ## CI
 
 GitHub Actions is configured at `.github/workflows/ci.yml`. It runs on push, installs the package plus pytest, runs `pytest -v`, and includes a Docker build job.
@@ -98,6 +100,8 @@ GitHub Actions is configured at `.github/workflows/ci.yml`. It runs on push, ins
 GitLab CI is configured at `.gitlab-ci.yml`. It contains a job named exactly `unit-test` that installs the package plus pytest and runs `pytest -v`.
 
 These CI paths use mock/stub tests only and do not require real LLM keys.
+
+Latest recorded GitHub Actions execution: commit `6d0b695` completed successfully in workflow run `29161129330`: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29161129330`.
 
 ## Credential Safety
 
@@ -107,6 +111,7 @@ Credential safety is isolated in `src/safe_test_repair_harness/credentials.py`.
 - Missing credentials return the stable `missing_credential` status.
 - Status and logging paths do not expose plaintext keys.
 - `redact_for_logging` recursively redacts sensitive-like values from observation and feedback-like payloads.
+- The submitted mock/demo distribution does not call paid or authenticated provider APIs. Real-provider key setup is post-MVP for this submission; any future real-provider extension should use `CredentialManager` or OS keyring / encrypted credential storage and must not print plaintext keys.
 
 ## Safety Boundaries and Limitations
 
@@ -127,6 +132,7 @@ Credential safety is isolated in `src/safe_test_repair_harness/credentials.py`.
 | Implementation plan | `PLAN.md` |
 | Process evidence | `SPEC_PROCESS.md`, `AGENT_LOG.md` |
 | User documentation | `README.md` |
+| Student reflection | `REFLECTION.md` |
 | Harness source | `src/safe_test_repair_harness/` |
 | Agent loop | `src/safe_test_repair_harness/agent_loop.py` |
 | WebUI mock demo | `src/safe_test_repair_harness/webui.py`, `render.yaml` |

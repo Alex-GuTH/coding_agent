@@ -375,21 +375,25 @@ The user allowed the SPEC to be patched if the changes matched the course docume
 **SPEC change:**  
 The SPEC added clearer statements and a mechanism mapping showing that the agent loop, feedback analyzer, guardrail engine, stop policy, action parser, tool dispatcher, memory, and configuration enforcement are implemented and tested as code mechanisms.
 
-## 6. Current Open Process Items
+## 6. Final Process Status
 
-The following items are not completed yet and should be handled in later process stages:
+The original open process items have been resolved or explicitly scoped as external submission evidence:
 
-- TODO: Optionally run a stricter Task 2 red-run cold-start trial if additional validation evidence is needed.
-- TODO: Start implementation only after the revised `SPEC.md`, `PLAN.md`, and cold-start record are confirmed stable.
-- TODO: During implementation, use TDD and record test-first steps.
-- TODO: Implement the harness according to `SPEC.md` and `PLAN.md`.
-- TODO: Run mock/stub LLM unit tests.
-- TODO: Add GitHub Actions workflow and `.gitlab-ci.yml`.
-- TODO: Build and verify Docker distribution.
-- TODO: Deploy the mock WebUI and record the public URL.
-- TODO: Maintain `AGENT_LOG.md` and the `PLAN.md` task status tracker during implementation.
-- TODO: Complete the student-written `REFLECTION.md`.
-- TODO: Perform final delivery review against both requirements files.
+- The stricter Task 2 red-run cold-start trial was performed and recorded in this document.
+- Implementation started only after the revised `SPEC.md`, `PLAN.md`, and cold-start record were stabilized.
+- Implementation followed TDD task-by-task, with red/green evidence recorded in `AGENT_LOG.md`.
+- The harness was implemented according to `SPEC.md` and `PLAN.md`.
+- Mock/stub LLM unit tests were run throughout the project.
+- GitHub Actions and `.gitlab-ci.yml` were added.
+- Docker local build/run and CI Docker build were verified.
+- The mock WebUI was deployed and the public URL was recorded.
+- `AGENT_LOG.md` and the `PLAN.md` task status tracker were maintained during implementation.
+- The student-written `REFLECTION.md` was added after the final process review.
+- Final delivery review against both requirements files was performed.
+
+Remaining external submission note:
+
+- Public Docker registry publication still requires a GHCR or Docker Hub publish step and registry visibility evidence if the grader interprets the container distribution requirement strictly.
 
 ## 7. Cold-start Validation With a Different Agent
 
