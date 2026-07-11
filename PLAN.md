@@ -59,7 +59,7 @@ Each task must maintain these fixed status fields:
 | Task 17 | Done | 7daf8af | Passed |
 | Task 18 | Done | ba99efa | Passed |
 | Task 19 | Done | c6ee25e | Passed |
-| Task 20 | Done | PENDING_TASK20_DOCS_COMMIT | Passed |
+| Task 20 | Done | 60f4624 | Passed |
 
 ## Planned File Structure
 
