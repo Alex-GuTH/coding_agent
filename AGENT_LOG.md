@@ -1151,8 +1151,8 @@ This log records implementation evidence for each PLAN task.
   - `pytest -v` => `135 passed`.
   - `git status --short` => clean.
   - Latest GitHub Actions CI/CD and registry publishing evidence:
-    - Commit: `3002fca`.
-    - Workflow run: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29190459696`.
+    - Commit: `76fb6ed`.
+    - Workflow run: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29190758993`.
     - Jobs: `test`, `docker-build`, and `docker-publish`.
     - Status: completed.
     - Conclusion: success.
@@ -1172,7 +1172,7 @@ This log records implementation evidence for each PLAN task.
     - Workspace query => `400`.
 - CI / Docker Assessment:
   - GitHub Actions runs on push, installs package plus pytest, runs `pytest -v`, builds Docker, and publishes the mock Docker image to GHCR.
-  - Latest observed GitHub Actions run for `3002fca` completed successfully.
+  - Latest observed GitHub Actions run for `76fb6ed` completed successfully.
   - GitLab CI has exact `unit-test` job and installs pytest before running tests.
   - Dockerfile copies only `pyproject.toml` and `src/`, installs the package, and defaults to `safe-repair demo guardrail`.
   - Public Docker registry target: `ghcr.io/alex-guth/coding_agent:latest`.

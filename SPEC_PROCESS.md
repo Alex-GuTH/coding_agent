@@ -397,8 +397,8 @@ The original open process items have been resolved or explicitly scoped as exter
 Final external submission evidence:
 
 - Latest recorded GitHub Actions CI/CD run after public Docker registry remediation:
-  - Commit: `3002fca`.
-  - Workflow run: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29190459696`.
+  - Commit: `76fb6ed`.
+  - Workflow run: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29190758993`.
   - Jobs: `test`, `docker-build`, and `docker-publish`.
   - Result: success.
 - Public Docker registry target:

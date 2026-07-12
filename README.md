@@ -108,7 +108,7 @@ GitLab CI is configured at `.gitlab-ci.yml`. It contains a job named exactly `un
 
 These CI paths use mock/stub tests only and do not require real LLM keys.
 
-Latest recorded GitHub Actions execution for CI/CD and GHCR publishing evidence: commit `3002fca` completed successfully in workflow run `29190459696`: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29190459696`. The `test`, `docker-build`, and `docker-publish` jobs all completed successfully.
+Latest recorded GitHub Actions execution for CI/CD and GHCR publishing evidence: commit `76fb6ed` completed successfully in workflow run `29190758993`: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29190758993`. The `test`, `docker-build`, and `docker-publish` jobs all completed successfully.
 
 ## Credential Safety
 
