@@ -98,7 +98,7 @@ docker run --rm safe-test-repair-harness:local
 
 The Dockerfile installs the package from `pyproject.toml` and `src/`. The safe mock default command is `safe-repair demo guardrail`.
 
-GitHub Actions publishes the public registry image to `ghcr.io/alex-guth/coding_agent:latest` from the mock-only Dockerfile. If GHCR initially creates the package with private visibility, set the package visibility to public in GitHub Packages before final submission.
+GitHub Actions publishes the public registry image to `ghcr.io/alex-guth/coding_agent:latest` from the mock-only Dockerfile. Public registry evidence recorded on `2026-07-12`: the GHCR `latest` manifest returned `200 OK` with digest `sha256:87fec731548672e54279e63dd6f91a2e19e059503580e242a7bcf1bdd4192819`.
 
 ## CI
 
@@ -108,7 +108,7 @@ GitLab CI is configured at `.gitlab-ci.yml`. It contains a job named exactly `un
 
 These CI paths use mock/stub tests only and do not require real LLM keys.
 
-Latest recorded GitHub Actions execution: commit `6d0b695` completed successfully in workflow run `29161129330`: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29161129330`.
+Latest recorded GitHub Actions execution for CI/CD and GHCR publishing evidence: commit `3002fca` completed successfully in workflow run `29190459696`: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29190459696`. The `test`, `docker-build`, and `docker-publish` jobs all completed successfully.
 
 ## Credential Safety
 

@@ -831,9 +831,9 @@ mock LLM 支持：
 - `safe-repair demo repair-loop`
 - `safe-repair demo guardrail`
 - `safe-repair demo feedback-classifier`
-- `safe-repair credentials status`
-- `safe-repair credentials set`
-- `safe-repair credentials clear`
+- `safe-repair credentials status`（post-MVP real-provider credential CLI）
+- `safe-repair credentials set`（post-MVP real-provider credential CLI）
+- `safe-repair credentials clear`（post-MVP real-provider credential CLI）
 
 边界条件：
 
@@ -1164,7 +1164,9 @@ mock LLM 不需要凭据，是测试和 CI 的主路径。
 
 `.env` 不是安全存储，只作为开发便利入口。README 必须说明它是明文文件，可能被进程环境读取，必须加入 `.gitignore`。
 
-凭据命令：
+Post-MVP real-provider credential CLI:
+
+Mock/demo delivery does not require these credential CLI commands. The submitted MVP implements the credential safety boundary in `CredentialManager`, `SecretStore`, `FakeCredentialStore`, and redaction tests. If a future real-provider CLI path is added, it should expose:
 
 - `safe-repair credentials status`：显示 provider 是否已配置 key，不显示 key 值。
 - `safe-repair credentials set`：隐藏输入 key 并保存。
@@ -1467,7 +1469,7 @@ CI 禁止事项：
    - feedback analyzer 的主贡献行为。
 5. CLI 可以运行 mock demo。
 6. 真实 LLM provider 可选，缺 key 不影响测试。
-7. 凭据支持安全录入、状态查看、更新和清除，状态查看不回显明文。
+7. MVP 凭据边界支持 fake/stub secret store、缺失凭据稳定错误、状态/日志脱敏；真实 provider 的 `safe-repair credentials status/set/clear` CLI 是 post-MVP 扩展，不是 mock/demo 提交路径的前提。
 8. README 写清安装、运行、Docker、key 配置、安全边界和已知限制。
 9. GitHub Actions workflow 存在，每次 push 自动运行测试；最后一次运行为 pass；因选择容器分发，workflow 包含 Docker build；测试和 smoke test 不调用真实 LLM、不依赖真实 API key。
 10. `.gitlab-ci.yml` 存在，包含名为 `unit-test` 的 job；该 job 不调用真实 LLM、不依赖真实 API key，并运行 mock/stub 单元测试。

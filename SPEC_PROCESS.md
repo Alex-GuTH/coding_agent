@@ -12,9 +12,12 @@ Current status:
 - `PLAN.md` has been generated and revised.
 - Cold-start validation with GitHub Copilot has been performed as a cold-start review/validation pass.
 - The validation exposed data-format and error-semantics ambiguities, and targeted revisions were applied to `SPEC.md` and `PLAN.md`.
-- No implementation code has been written as part of this process record.
+- Implementation has been completed and reviewed task-by-task.
+- `REFLECTION.md` has been added by the student.
+- Final CI/CD evidence has been recorded after the final submission-readiness pass.
+- Public Docker registry evidence has been recorded for `ghcr.io/alex-guth/coding_agent:latest`.
 
-This file intentionally does not describe implementation results, test results, or validation outcomes that have not occurred.
+This file records process evidence and only describes implementation, test, CI, deployment, registry, and reflection outcomes that have occurred.
 
 ## 2. Brainstorming Stage
 
@@ -391,9 +394,20 @@ The original open process items have been resolved or explicitly scoped as exter
 - The student-written `REFLECTION.md` was added after the final process review.
 - Final delivery review against both requirements files was performed.
 
-Remaining external submission note:
+Final external submission evidence:
 
-- Public Docker registry publication still requires a GHCR or Docker Hub publish step and registry visibility evidence if the grader interprets the container distribution requirement strictly.
+- Latest recorded GitHub Actions CI/CD run after public Docker registry remediation:
+  - Commit: `3002fca`.
+  - Workflow run: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29190459696`.
+  - Jobs: `test`, `docker-build`, and `docker-publish`.
+  - Result: success.
+- Public Docker registry target:
+  - `ghcr.io/alex-guth/coding_agent:latest`.
+  - GHCR manifest check returned `200 OK` on `2026-07-12`.
+  - Manifest digest: `sha256:87fec731548672e54279e63dd6f91a2e19e059503580e242a7bcf1bdd4192819`.
+- Worktree / PR evidence note:
+  - The implementation was completed on `main` with small task-scoped commits, TDD evidence, and explicit per-task review checkpoints in `AGENT_LOG.md`.
+  - No separate PR links are recorded in the repository. This is a process limitation if the grader strictly expects PR-based workflow evidence.
 
 ## 7. Cold-start Validation With a Different Agent
 

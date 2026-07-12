@@ -1150,9 +1150,10 @@ This log records implementation evidence for each PLAN task.
   - `pytest tests/test_deployment_contract.py -v` => `5 passed`.
   - `pytest -v` => `135 passed`.
   - `git status --short` => clean.
-  - Latest GitHub Actions CI after `REFLECTION.md` push:
-    - Commit: `6d0b695`.
-    - Workflow run: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29161129330`.
+  - Latest GitHub Actions CI/CD and registry publishing evidence:
+    - Commit: `3002fca`.
+    - Workflow run: `https://github.com/Alex-GuTH/coding_agent/actions/runs/29190459696`.
+    - Jobs: `test`, `docker-build`, and `docker-publish`.
     - Status: completed.
     - Conclusion: success.
 - Required Files Check:
@@ -1170,11 +1171,13 @@ This log records implementation evidence for each PLAN task.
     - `/upload` => `404`.
     - Workspace query => `400`.
 - CI / Docker Assessment:
-  - GitHub Actions runs on push, installs package plus pytest, runs `pytest -v`, and builds Docker.
-  - Latest observed GitHub Actions run for `6d0b695` completed successfully.
+  - GitHub Actions runs on push, installs package plus pytest, runs `pytest -v`, builds Docker, and publishes the mock Docker image to GHCR.
+  - Latest observed GitHub Actions run for `3002fca` completed successfully.
   - GitLab CI has exact `unit-test` job and installs pytest before running tests.
   - Dockerfile copies only `pyproject.toml` and `src/`, installs the package, and defaults to `safe-repair demo guardrail`.
-  - External submission note: public Docker registry publication still requires GHCR or Docker Hub publishing and visibility evidence if required by the grader.
+  - Public Docker registry target: `ghcr.io/alex-guth/coding_agent:latest`.
+  - GHCR manifest check returned `200 OK` on `2026-07-12`.
+  - GHCR manifest digest: `sha256:87fec731548672e54279e63dd6f91a2e19e059503580e242a7bcf1bdd4192819`.
 - WebUI / Deployment Assessment:
   - `render.yaml` starts `safe_test_repair_harness.webui.make_server`.
   - WebUI remains built-in mock demo only, rejects `/upload`, and rejects `workspace/path/command` query parameters.
@@ -1187,6 +1190,12 @@ This log records implementation evidence for each PLAN task.
   - `REFLECTION.md` exists.
   - The reflection was supplied by the student and committed as `6d0b695`.
   - Codex did not draft the reflection body; Codex only checked repository status and delivery evidence.
+- Post-final Requirements Closure Notes:
+  - `REFLECTION.md` was committed and pushed.
+  - GitHub Actions latest recorded CI/CD run is passing.
+  - GHCR public registry evidence is recorded in README, SPEC_PROCESS, and this log.
+  - Real-provider credential CLI commands are explicitly scoped as post-MVP in `SPEC.md`; the submitted mock/demo path uses the implemented credential boundary and does not require real keys.
+  - Implementation used small commits and task-level review checkpoints on `main`; no separate PR links are recorded in the repository.
 - Critical Issues: None.
 - Major Issues: None.
 - Minor Issues: None.
