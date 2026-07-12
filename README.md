@@ -82,7 +82,14 @@ Safety boundaries:
 
 ## Docker
 
-Build and run the container:
+Pull and run the public mock-demo image:
+
+```powershell
+docker pull ghcr.io/alex-guth/coding_agent:latest
+docker run --rm ghcr.io/alex-guth/coding_agent:latest
+```
+
+Build and run the container locally:
 
 ```powershell
 docker build -t safe-test-repair-harness:local .
@@ -91,7 +98,7 @@ docker run --rm safe-test-repair-harness:local
 
 The Dockerfile installs the package from `pyproject.toml` and `src/`. The safe mock default command is `safe-repair demo guardrail`.
 
-Public registry note: local Docker build/run and GitHub Actions Docker build are verified. If strict public-registry evidence is required, publish this image to GHCR or Docker Hub and add the resulting `docker pull` command here.
+GitHub Actions publishes the public registry image to `ghcr.io/alex-guth/coding_agent:latest` from the mock-only Dockerfile. If GHCR initially creates the package with private visibility, set the package visibility to public in GitHub Packages before final submission.
 
 ## CI
 

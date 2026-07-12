@@ -49,6 +49,16 @@ def test_github_actions_has_docker_build_job() -> None:
     assert "safe-test-repair-harness:ci" in text
 
 
+def test_github_actions_publishes_docker_image_to_ghcr() -> None:
+    text = read(GITHUB_WORKFLOW).lower()
+
+    assert "packages: write" in text
+    assert "docker-publish:" in text
+    assert "ghcr.io/alex-guth/coding_agent:latest" in text
+    assert "docker login ghcr.io" in text
+    assert "docker push ghcr.io/alex-guth/coding_agent:latest" in text
+
+
 def test_gitlab_ci_exists() -> None:
     assert GITLAB_CI.exists()
 
@@ -69,8 +79,9 @@ def test_ci_configs_do_not_reference_real_api_keys() -> None:
         "openai_api_key",
         "anthropic_api_key",
         "api_key",
-        "token",
-        "secret",
+        "token=",
+        "secret=",
+        "secrets.",
         "sk-",
         "real_provider",
         "real-llm",

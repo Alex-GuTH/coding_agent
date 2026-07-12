@@ -32,6 +32,7 @@ def test_readme_documents_docker_usage() -> None:
 
     assert "docker build -t safe-test-repair-harness:local ." in text
     assert "docker run --rm safe-test-repair-harness:local" in text
+    assert "docker pull ghcr.io/alex-guth/coding_agent:latest" in text
     assert "safe mock default command" in text
 
 
